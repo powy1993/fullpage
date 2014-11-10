@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.9
+ * 2014.11.10
  *
  */
 
@@ -407,7 +407,7 @@ function FullPage(options) {
 
 							delta = {
 								x : touches.pageX - start.x,
-								y : touches.pageY - start.y,
+								y : touches.pageY - start.y
 							}
 
 							switch (options.direction) {

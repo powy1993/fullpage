@@ -2,7 +2,7 @@
  * Chriswang
  * 396276123@qq.com
  * 2014.11.11
- *
+ * Github:https://github.com/powy1993/fullpage
  */
 
 function FullPage(options) {
@@ -354,6 +354,11 @@ function FullPage(options) {
 
 				replaceClass(page[indexOld], 'current', '');
 				replaceClass(page[indexNow], 'slide', 'current');
+
+				if (options.callback) {
+					options.callback(indexNow, page[indexNow]);
+				}
+
 				_isLocked = false;
 			}, sTime)
 		}, 50);

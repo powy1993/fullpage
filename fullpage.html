@@ -149,18 +149,21 @@
 		<li>5</li>
 	</ul>
 
-<script type="text/javascript" src="js/fullPage.js"></script>
+<script type="text/javascript" src="js/fullPage.min.js"></script>
 <script type="text/javascript">
 	
 var runPage;
 
 runPage = new FullPage({
 
-	id : 'pageContain',               // id of contain
-	slideTime : 800,                  // time of slide
-    direction : 'Y',                  // direction of slide
-	mode : 'wheel,touch,nav:navBar',  // mode of fullpage
-	easing : [.33, 1.81, 1, 1]        // easing('ease','ease-in','ease-in-out' or use cubic-bezier)
+	id : 'pageContain',                        // id of contain
+	slideTime : 800,                           // time of slide
+    direction : 'Y',                           // direction of slide
+	mode : 'wheel,touch,nav:navBar',           // mode of fullpage
+	easing : [.33, 1.81, 1, 1],                // easing('ease','ease-in','ease-in-out' or use cubic-bezier)
+    callback : function(index, thisPage) {     // callback when pageChange
+        console.log('now:' + index);
+    }
 });
 
 

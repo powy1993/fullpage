@@ -505,8 +505,17 @@ function FullPage(options) {
 
 					gotoPage = function(e) {
 
+						var t;
 						e = e || window.event;
 						e = e.target || e.srcElement;
+
+						t = e.tagName.toLowerCase();
+
+						while (t !== 'li') {
+							if (t === 'ul') return;
+							e = e.parentNode;
+							t = e.tagName.toLowerCase();
+						}
 
 						goPage( + e.getAttribute('data-page') ); 
 					}

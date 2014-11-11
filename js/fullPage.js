@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.9
+ * 2014.11.11
  *
  */
 
@@ -18,11 +18,13 @@ function FullPage(options) {
 		browser = {},
 		pageRange = {},
 		cubicCurve = {},
-		mode = options.mode.split(','),
-		modeLen = mode.length,
+		mode = [],
+		modeLen,
+		navChildren,
 		SPACE = ' ',
 		_interval = null,
 		_isLocked = false,
+		_isNav = false,
 		_curve,
 		_t,
 		init,
@@ -31,9 +33,15 @@ function FullPage(options) {
 		onTap,
 		replaceClass,
 		goPage,
+		navChange,
 		wheelScroll;
-	
+
 	if (!page || pagelen === 1) return;
+	if (options.mode) {
+		_isNav = options.mode.indexOf('nav:') !== -1;
+		mode = options.mode.split(',');
+		modeLen = mode.length;
+	}
 
 	browser = {
 
@@ -275,9 +283,23 @@ function FullPage(options) {
 					}
 				}
 			}
-			o.className = arr.join(SPACE);
+			if (arr.length) {
+				o.className = arr.join(SPACE);
+			} else {
+				o.removeAttribute('class');
+				o.removeAttribute('className');
+			}
 		}
 
+	}
+
+	if (_isNav) {
+		navChange = function(from, to) {
+			var t = navChildren[to].className;
+
+			replaceClass(navChildren[from], 'active', SPACE);
+			navChildren[to].className = t === '' ? 'active' : t + ' active';
+		}
 	}
 
 	goPage = function(to) {
@@ -319,6 +341,7 @@ function FullPage(options) {
 		fix = browser.cssCore === '' ? 20 : 0;
 		indexOld = indexNow;
 		indexNow = to;
+		if (_isNav) navChange(indexOld, indexNow);
 		setTimeout(function() {
 			// fix for bug in ie6-9 about z-index
 			page[to].className += ' slide';	
@@ -360,6 +383,11 @@ function FullPage(options) {
 
 					var direct;
 					e = e || window.event;
+					if (e.preventDefault) {
+						e.preventDefault();
+					} else {
+						e.returnValue = false;
+					}
 					direct = - e.wheelDelta ||  e.detail;
 					direct = direct < 0 ? -1 : 1;
 
@@ -407,7 +435,7 @@ function FullPage(options) {
 
 							delta = {
 								x : touches.pageX - start.x,
-								y : touches.pageY - start.y,
+								y : touches.pageY - start.y
 							}
 
 							switch (options.direction) {
@@ -452,15 +480,22 @@ function FullPage(options) {
 
 					var navId = m.split(':')[1],
 						navObj = document.getElementById(navId),
-						navChildren = navObj.children,
-						navLen = navChildren.length,
-						gotoPage;
+						navLen,
+						gotoPage,
+						_t;
 
-					if (!navObj) return;
+					navChildren = navObj.children;
+					navLen = navChildren.length;
+					_t = navChildren[indexNow].className;
+
+					if (!navObj || !navChildren) return;
 
 					while (navLen--) {
 						// set attr for finding specific page
 						navChildren[navLen].setAttribute('data-page', navLen);
+					}
+					if (_t.indexOf('active') === -1) {
+						navChildren[indexNow].className = _t === '' ? 'active' : _t + ' active';
 					}
 
 					gotoPage = function(e) {

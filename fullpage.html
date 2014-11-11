@@ -16,8 +16,12 @@
     	margin: 0;
     	padding: 0;
     }
+    ul {
+        list-style: none;
+    }
     body {
     	width: 100%;
+        *cursor: default;
     	overflow: hidden;
     	font: 16px/1.5 "Microsoft YaHei",Helvetica,STHeiti STXihei,Microsoft JhengHei,Arial;
     }
@@ -77,9 +81,27 @@
     	top: 10%;
     	right: 3%;
     }
+    #navBar .active {
+        background: #ccc;
+    }
+    #navBar li {
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: all .7s ease;
+        border-radius: 50%;
+        line-height: 40px;
+        text-align: center;
+        width: 40px;
+        height: 40px;
+    }
     </style>
 </head>
-<body>
+<!--[if lte IE 7]>      
+<body scroll="no"> 
+<![endif]-->
+<!--[if gt IE 7]><!--> 
+<body> 
+<!--<![endif]-->
 	<div id="pageContain">
 		
 		<div class="page page1 current">
@@ -126,6 +148,7 @@
 		<li>4</li>
 		<li>5</li>
 	</ul>
+
 <script type="text/javascript" src="js/fullPage.js"></script>
 <script type="text/javascript">
 	
@@ -133,11 +156,11 @@ var runPage;
 
 runPage = new FullPage({
 
-	id : 'pageContain',
-	slideTime : 800,
-    direction : 'Y',
-	mode : 'wheel,touch,nav:navBar',
-	easing : [.33, 1.81, 1, 1]
+	id : 'pageContain',               // id of contain
+	slideTime : 800,                  // time of slide
+    direction : 'Y',                  // direction of slide
+	mode : 'wheel,touch,nav:navBar',  // mode of fullpage
+	easing : [.33, 1.81, 1, 1]        // easing('ease','ease-in','ease-in-out' or use cubic-bezier)
 });
 
 

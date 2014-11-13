@@ -225,7 +225,7 @@ function FullPage(options) {
 				c += t === 0 ? ' rotate(' + a.rotate[0] + 'deg)'
 							 : ' rotate(' + a.rotate[1] + 'deg)';
 			}
-
+			
 			s[browser.cssCore + 'Transform'] = c;
 		}
 	} else {
@@ -301,12 +301,13 @@ function FullPage(options) {
 				trans(page[to], rangeNow.X, rangeNow.Y, 0, o);
 				break;
 
-				default :
+				default:
+				trans(page[to], 0, 0, 0, o);
 				break;
 			}
 			setTimeout(function() {
 				trans(page[to], 0, 0, sTime, o);
-			}, 40);
+			}, browser.cssCore === '' ? 0 : 40);
 		},
 		opacity : function(o, from, to) {
 			var s = page[to].style;
@@ -488,6 +489,7 @@ function FullPage(options) {
 							var touches = e.changedTouches[0],
 								duration = +new Date - start.time,
 								delta = {},
+								abs = {},
 								next = 0,
 								isValidSlide = false;
 
@@ -495,30 +497,34 @@ function FullPage(options) {
 								x : touches.pageX - start.x,
 								y : touches.pageY - start.y
 							}
+							abs = {
+								x : Math.abs(delta.x),
+								y : Math.abs(delta.y)
+							}
 
 							switch (options.effect.transform['translate']) {
 								case 'Y' :
 								isValidSlide = 
-									+  duration < 250 && Math.abs(delta.y) > 20
-									|| Math.abs(delta.y) > pageRange.Y * .3;
+									+  duration < 250 && abs.y > 20
+									|| abs.y > pageRange.Y * .3;
 								next = delta.y > 0 ? -1 : 1;
 								break;
 
 								case 'X' :
 								isValidSlide = 
-									+  duration < 250 && Math.abs(delta.x) > 20
-									|| Math.abs(delta.x) > pageRange.Y * .4;
+									+  duration < 250 && abs.x > 20
+									|| abs.x > pageRange.Y * .4;
 								next = delta.x > 0 ? -1 : 1;
 								break;
 
-								case 'XY' :
-								isValidSlide = 
-									+  duration < 250 && Math.abs(delta.y) + Math.abs(delta.x) > 40
-									|| Math.abs(delta.y) > pageRange.Y * .2;
-								next = delta.y > 0 ? -1 : 1;
-								break;
-
 								default :
+								isValidSlide = 
+									+  duration < 250 && abs.y + abs.x > 50
+									|| abs.y > pageRange.Y * .2
+									|| abs.x > pageRange.X * .3;
+								next = abs.x > abs.y ? 
+									   delta.x > 0 ? -1 : 1
+									 : delta.y > 0 ? -1 : 1;
 								break;
 							}
 							if (isValidSlide) {

@@ -280,7 +280,9 @@ function FullPage(options) {
 	resetAndRun = {
 		transform : function(o, from, to) {
 
-			var rangeNow = 0;
+			var rangeNow = 0,
+				fix = browser.cssCore === '' 
+					&& (o['translate'] === 'none' || !o.translate) ? 0 : 40;
 
 			switch (o['translate']) {
 				case 'Y' :
@@ -307,7 +309,7 @@ function FullPage(options) {
 			}
 			setTimeout(function() {
 				trans(page[to], 0, 0, sTime, o);
-			}, browser.cssCore === '' ? 0 : 40);
+			}, fix);
 		},
 		opacity : function(o, from, to) {
 			var s = page[to].style;

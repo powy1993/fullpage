@@ -14,6 +14,7 @@ function FullPage(options) {
 		pagelen = page.length,
 		iPage = pagelen,
 		sTime = options.slideTime || 800,
+		effect = options.effect || {},
 		indexNow = 0,
 		browser = {},
 		pageRange = {},
@@ -29,7 +30,8 @@ function FullPage(options) {
 		_t,
 		init,
 		setCubic,
-		translate,
+		trans,
+		resetAndRun,
 		onTap,
 		replaceClass,
 		goPage,
@@ -171,7 +173,7 @@ function FullPage(options) {
 
 	if (typeof options.easing === 'string') {
 
-		switch (options.animate) {
+		switch (options.easing) {
 
 			case 'ease' : 
 			setCubic(0.25, 0.1, 0.25, 1);
@@ -208,19 +210,20 @@ function FullPage(options) {
 																			+ cubicCurve.D + ')';
 		}
 
-		translate = function(o, x, y, t) {
+		trans = function(o, x, y) {
 
-			var s = o.style;
+			var s = o.style,
+				t = arguments[4] ? 'translate(' + x +'px,' + y + 'px) translateZ(0) scale(' + arguments[4] +')'
+								 : 'translate(' + x +'px,' + y + 'px) translateZ(0)'
 
-			s[browser.cssCore + 'TransitionDuration'] = t + 'ms';
-			s[browser.cssCore + 'Transform'] = 'translate(' + x +'px,' + y + 'px) translateZ(0)';
+			s[browser.cssCore + 'Transform'] = t;
 		}
 	} else {
 		// simulate translate for ie9- 
 		// Cubic-bezier : Fn(t) = (3p1-3p2+1)t^3+(3p2-6p1)t^2-3p1t.
 		_curve = new UnitBezier(cubicCurve.A, cubicCurve.B, cubicCurve.C, cubicCurve.D);
 
-		translate = function(o, x, y, t) {
+		trans = function(o, x, y, t) {
 
 			var cs = o.currentStyle,
 				s = o.style,
@@ -246,6 +249,7 @@ function FullPage(options) {
 					// fix to cubic-bezier
 					// pos = 1 - pos * pos * pos;
 					pos = _curve.solve(1 - pos, UnitBezier.prototype.epsilon);
+
 					s.cssText = 'left:'   + (cx + dx * pos) 
 							  + 'px;top:' + (cy + dy * pos) 
 							  + 'px;';
@@ -254,9 +258,56 @@ function FullPage(options) {
 		}
 	}
 
+	resetAndRun = {
+		transform : function(o, from, to) {
+
+			var rangeNow = 0;
+
+			switch (o[0]) {
+				case 'Y' :
+				rangeNow = to > from ? pageRange.Y : - pageRange.Y;
+				trans(page[to], 0, rangeNow, 0, o[1]);
+				break;
+
+				case 'X' :
+				rangeNow = to > from ? pageRange.X : - pageRange.X;
+				trans(page[to], rangeNow, 0, 0, o[1]);
+				break;
+
+				case 'XY' :
+				rangeNow = {
+					X : to > from ? pageRange.X : - pageRange.X, 
+					Y : to > from ? pageRange.Y : - pageRange.Y
+				}
+				trans(page[to], rangeNow.X, rangeNow.Y, 0, o[1]);
+				break;
+
+				default :
+				break;
+			}
+			setTimeout(function() {
+				trans(page[to], 0, 0, sTime, o[2]);
+			}, 40);
+		},
+		opacity : function(o, from, to) {
+			var s = page[to].style;
+
+			s.opacity = o[0];
+			setTimeout(function() {
+				s.opacity = o[1];
+			}, 40);
+		}
+	}
+
 	if (browser.addEventListener && browser.touch) {
 		onTap = function (o, fn) {
 			o.addEventListener('touchstart', fn, false);
+			if (arguments[2]) {       
+				// if we touch on navBar we should stop scroll
+				o.addEventListener('touchmove', function(e) {
+					e.preventDefault();
+				}, false);
+			}
 		}
 	} else {
 		onTap = function (o, fn) {
@@ -304,9 +355,9 @@ function FullPage(options) {
 
 	goPage = function(to) {
 
-		var rangeNow,
-			fix,
-			indexOld;
+		var fix,
+			indexOld,
+			_effectNow;
 
 		if (_isLocked                 // make sure translate is already
 			|| to === indexNow		  // don't translate if thispage
@@ -314,28 +365,9 @@ function FullPage(options) {
 			|| to < 0) return;		  // less than min page(0)
 
 		_isLocked = true;
-
-		switch (options.direction) {
-			case 'Y' :
-			rangeNow = to > indexNow ? pageRange.Y : - pageRange.Y;
-			translate(page[to], 0, rangeNow, 0);
-			break;
-
-			case 'X' :
-			rangeNow = to > indexNow ? pageRange.X : - pageRange.X;
-			translate(page[to], rangeNow, 0, 0);
-			break;
-
-			case 'XY' :
-			rangeNow = {
-				X : to > indexNow ? pageRange.X : - pageRange.X, 
-				Y : to > indexNow ? pageRange.Y : - pageRange.Y
-			}
-			translate(page[to], rangeNow.X, rangeNow.Y, 0);
-			break;
-
-			default :
-			break;
+		
+		for (_effectNow in effect) {
+			resetAndRun[_effectNow](effect[_effectNow], indexNow, to);
 		}
 
 		fix = browser.cssCore === '' ? 20 : 0;
@@ -349,19 +381,20 @@ function FullPage(options) {
 
 		setTimeout(function() {
 
-			translate(page[to], 0, 0, sTime);
-			setTimeout(function() {
+			page[to]['style'][browser.cssCore + 'TransitionDuration'] = sTime + 'ms';
+		}, 20);
 
-				replaceClass(page[indexOld], 'current', '');
-				replaceClass(page[indexNow], 'slide', 'current');
+		setTimeout(function() {
 
-				if (options.callback) {
-					options.callback(indexNow, page[indexNow]);
-				}
+			replaceClass(page[indexOld], 'current', '');
+			replaceClass(page[indexNow], 'slide', 'current');
 
-				_isLocked = false;
-			}, sTime)
-		}, 50);
+			if (options.callback) {
+				options.callback(indexNow, page[indexNow]);
+			}
+
+			_isLocked = false;
+		}, sTime + 50);
 
 	}
 	
@@ -393,6 +426,7 @@ function FullPage(options) {
 					} else {
 						e.returnValue = false;
 					}
+					if (_isLocked) return;
 					direct = - e.wheelDelta ||  e.detail;
 					direct = direct < 0 ? -1 : 1;
 
@@ -443,7 +477,7 @@ function FullPage(options) {
 								y : touches.pageY - start.y
 							}
 
-							switch (options.direction) {
+							switch (options.effect.transform[0]) {
 								case 'Y' :
 								isValidSlide = 
 									+  duration < 250 && Math.abs(delta.y) > 20
@@ -520,7 +554,7 @@ function FullPage(options) {
 						goPage( + e.getAttribute('data-page') ); 
 					}
 					// bind event to navObj
-					onTap(navObj, gotoPage);
+					onTap(navObj, gotoPage, 1);
 				}());
 			}
 		}(mode[modeLen]));

@@ -138,13 +138,13 @@
 			<div class="contain">
 				
 			</div>
-		</div>
+		</div> 
 	</div>
 	<ul id="navBar">
 		<li>0</li>
 		<li>1</li>
 		<li>2</li>
-		<li>3</li>
+ 		<li>3</li>
 		<li>4</li>
 		<li>5</li>
 	</ul>
@@ -156,16 +156,18 @@ var runPage;
 
 runPage = new FullPage({
 
-	id : 'pageContain',                        // id of contain
-	slideTime : 800,                           // time of slide
-    direction : 'Y',                           // direction of slide
-	mode : 'wheel,touch,nav:navBar',           // mode of fullpage
-	easing : [.33, 1.81, 1, 1],                // easing('ease','ease-in','ease-in-out' or use cubic-bezier)
-    callback : function(index, thisPage) {     // callback when pageChange
+	id : 'pageContain',                            // id of contain
+	slideTime : 800,                               // time of slide
+    effect : {                                     // slide effect
+        transform : ['Y', .1, 1],                  // transform ['X'|'Y'|'XY',scalefrom, scaleto]
+        opacity : [0, 1]                           // opacity [from, to]
+    },                           
+	mode : 'wheel,touch,nav:navBar',               // mode of fullpage
+	easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1] )
+    //  callback : function(index, thisPage) {     // callback when pageChange
         
-    }
+    //  }
 });
-
 
 </script>
 </body>

@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.11
+ * 2014.11.13
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -210,13 +210,23 @@ function FullPage(options) {
 																			+ cubicCurve.D + ')';
 		}
 
-		trans = function(o, x, y) {
+		trans = function(o, x, y, t) {
 
 			var s = o.style,
-				t = arguments[4] ? 'translate(' + x +'px,' + y + 'px) translateZ(0) scale(' + arguments[4] +')'
-								 : 'translate(' + x +'px,' + y + 'px) translateZ(0)'
+				c = 'translate(' + x +'px,' + y + 'px) translateZ(0)',
+				a = arguments[4];
 
-			s[browser.cssCore + 'Transform'] = t;
+			if (a.scale) {
+				c += t === 0 ? ' scale(' + a.scale[0] + ')'
+							 : ' scale(' + a.scale[1] + ')';
+			}
+
+			if (a.rotate) {
+				c += t === 0 ? ' rotate(' + a.rotate[0] + 'deg)'
+							 : ' rotate(' + a.rotate[1] + 'deg)';
+			}
+
+			s[browser.cssCore + 'Transform'] = c;
 		}
 	} else {
 		// simulate translate for ie9- 
@@ -225,35 +235,44 @@ function FullPage(options) {
 
 		trans = function(o, x, y, t) {
 
-			var cs = o.currentStyle,
-				s = o.style,
-				cx = parseInt(s.left || cs.left, 10),
-				cy = parseInt(s.top || cs.top, 10),
-				dx = x - cx,
-				dy = y - cy,
-				ft = +new Date,
+			var cs  = o.currentStyle,
+				s   = o.style,
+				cx  = parseInt(s.left || cs.left, 10),
+				cy  = parseInt(s.top  || cs.top, 10),
+				dx  = x - cx,
+				dy  = y - cy,
+				ft  = +new Date,
 				end = ft + t,
 				pos = 0,
+				e   = effect.opacity,
 				diff;
 
 			clearInterval(_interval);
 
 			_interval = setInterval(function() {
 
+				var _t;
+
 				if (+new Date > end) {
-					s.cssText = 'left:' + x + 'px;top:' + y + 'px;'
+
+					_t = e ? 'left:' + x + 'px;top:' + y + 'px;filter:alpha(opacity=' + 100 * e[1] + ');'
+						   : 'left:' + x + 'px;top:' + y + 'px;';
+
 					clearInterval(_interval);
 				} else {
 					diff = end - new Date;
-					pos = diff / t;
+					pos  = diff / t;
 					// fix to cubic-bezier
-					// pos = 1 - pos * pos * pos;
 					pos = _curve.solve(1 - pos, UnitBezier.prototype.epsilon);
 
-					s.cssText = 'left:'   + (cx + dx * pos) 
-							  + 'px;top:' + (cy + dy * pos) 
-							  + 'px;';
+					_t = 'left:'  + (cx + dx * pos) 
+								  + 'px;top:' + (cy + dy * pos) 
+								  + 'px;'
+					if (e) {
+						_t += 'filter:alpha(opacity=' + 100 * ( e[1] * pos - e[0] * (1 - pos) )+ ');'
+					}
 				}
+				s.cssText = _t;
 			}, 13);
 		}
 	}
@@ -263,15 +282,15 @@ function FullPage(options) {
 
 			var rangeNow = 0;
 
-			switch (o[0]) {
+			switch (o['translate']) {
 				case 'Y' :
 				rangeNow = to > from ? pageRange.Y : - pageRange.Y;
-				trans(page[to], 0, rangeNow, 0, o[1]);
+				trans(page[to], 0, rangeNow, 0, o);
 				break;
 
 				case 'X' :
 				rangeNow = to > from ? pageRange.X : - pageRange.X;
-				trans(page[to], rangeNow, 0, 0, o[1]);
+				trans(page[to], rangeNow, 0, 0, o);
 				break;
 
 				case 'XY' :
@@ -279,14 +298,14 @@ function FullPage(options) {
 					X : to > from ? pageRange.X : - pageRange.X, 
 					Y : to > from ? pageRange.Y : - pageRange.Y
 				}
-				trans(page[to], rangeNow.X, rangeNow.Y, 0, o[1]);
+				trans(page[to], rangeNow.X, rangeNow.Y, 0, o);
 				break;
 
 				default :
 				break;
 			}
 			setTimeout(function() {
-				trans(page[to], 0, 0, sTime, o[2]);
+				trans(page[to], 0, 0, sTime, o);
 			}, 40);
 		},
 		opacity : function(o, from, to) {
@@ -477,7 +496,7 @@ function FullPage(options) {
 								y : touches.pageY - start.y
 							}
 
-							switch (options.effect.transform[0]) {
+							switch (options.effect.transform['translate']) {
 								case 'Y' :
 								isValidSlide = 
 									+  duration < 250 && Math.abs(delta.y) > 20

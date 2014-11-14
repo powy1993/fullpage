@@ -28,6 +28,7 @@ function FullPage(options) {
 		_isNav = false,
 		_curve,
 		_t,
+		_fix,
 		init,
 		setCubic,
 		trans,
@@ -58,7 +59,8 @@ function FullPage(options) {
                 matchVersion = u.indexOf('Android'),
                 num;
 
-            if (u.indexOf('QQBrowser') !== -1) return -1;
+            _fix = u.indexOf('QQBrowser') !== -1 ? 200 : 0;
+
             if (matchVersion !== -1) {
                 num = u.substring(matchVersion + 7, matchVersion + 11).replace(' ', '');
             }
@@ -283,9 +285,7 @@ function FullPage(options) {
 
 			var rangeNow = 0,
 				fix = browser.cssCore === ''
-					&& (o['translate'] === 'none' || !o.translate ) ? 0 
-					: browser.version !== -1 ? 20
-					: 120;
+					&& (o['translate'] === 'none' || !o.translate ) ? -50 : _fix;
 
 			switch (o['translate']) {
 				case 'Y' :
@@ -312,7 +312,7 @@ function FullPage(options) {
 			}
 			setTimeout(function() {
 				trans(page[to], 0, 0, sTime, o);
-			}, fix);
+			}, fix + 50);
 		},
 		opacity : function(o, from, to) {
 			var s = page[to].style;
@@ -320,7 +320,7 @@ function FullPage(options) {
 			s.opacity = o[0];
 			setTimeout(function() {
 				s.opacity = o[1];
-			}, 50);
+			}, 70);
 		}
 	}
 
@@ -380,7 +380,7 @@ function FullPage(options) {
 
 	goPage = function(to) {
 
-		var fix,
+		var fix = _fix,
 			indexOld,
 			_effectNow;
 
@@ -395,7 +395,7 @@ function FullPage(options) {
 			resetAndRun[_effectNow](effect[_effectNow], indexNow, to);
 		}
 
-		fix = browser.cssCore === '' ? 20 : 0;
+		fix += browser.cssCore === '' ? 20  : 0 ;
 		indexOld = indexNow;
 		indexNow = to;
 		if (_isNav) navChange(indexOld, indexNow);
@@ -419,7 +419,7 @@ function FullPage(options) {
 			}
 
 			_isLocked = false;
-		}, sTime + 50);
+		}, sTime + _fix + 120);
 
 	}
 	

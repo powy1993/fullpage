@@ -535,6 +535,8 @@ function FullPage(options) {
 							if (isValidSlide) {
 								goPage(indexNow + next);
 							}
+							pageContain.removeEventListener('touchmove', touchEvent.move, false);
+							pageContain.removeEventListener('touchend', touchEvent.end, false);
 						}
 
 					}

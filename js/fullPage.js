@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.13
+ * 2014.11.14
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -14,6 +14,7 @@ function FullPage(options) {
 		pagelen = page.length,
 		iPage = pagelen,
 		sTime = options.slideTime || 800,
+		Qfix = 100,
 		effect = options.effect || {},
 		indexNow = 0,
 		browser = {},
@@ -52,12 +53,13 @@ function FullPage(options) {
         touch : ('ontouchstart' in window) || 
                 window.DocumentTouch && document instanceof DocumentTouch,
 
-        versionAndroid: function() {
+        version: function() {
 
             var u = navigator.userAgent,
                 matchVersion = u.indexOf('Android'),
                 num;
 
+            if (u.indexOf('QQBrowser') !== -1) return -1;
             if (matchVersion !== -1) {
                 num = u.substring(matchVersion + 7, matchVersion + 11).replace(' ', '');
             }
@@ -281,8 +283,10 @@ function FullPage(options) {
 		transform : function(o, from, to) {
 
 			var rangeNow = 0,
-				fix = browser.cssCore === '' 
-					&& (o['translate'] === 'none' || !o.translate) ? 0 : 40;
+				fix = browser.cssCore === ''
+					&& (o['translate'] === 'none' || !o.translate ) ? 0 
+					: browser.version !== -1 ? 20
+					: 120;
 
 			switch (o['translate']) {
 				case 'Y' :
@@ -317,7 +321,7 @@ function FullPage(options) {
 			s.opacity = o[0];
 			setTimeout(function() {
 				s.opacity = o[1];
-			}, 40);
+			}, 50);
 		}
 	}
 

@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.14
+ * 2014.11.18
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -19,6 +19,7 @@ function FullPage(options) {
 		browser = {},
 		pageRange = {},
 		cubicCurve = {},
+		pageStyle = [],
 		mode = [],
 		modeLen,
 		navChildren,
@@ -44,6 +45,9 @@ function FullPage(options) {
 		_isNav = options.mode.indexOf('nav:') !== -1;
 		mode = options.mode.split(',');
 		modeLen = mode.length;
+	}
+	for (_t = 0; _t < pagelen; _t++) {
+		pageStyle.push(page[_t].style);
 	}
 
 	browser = {
@@ -206,11 +210,11 @@ function FullPage(options) {
 		
 		while (iPage--) {
 
-			page[iPage].style[browser.cssCore + 'TransitionTimingFunction'] = 'cubic-bezier(' 
-																			+ cubicCurve.A + ',' 
-																			+ cubicCurve.B + ',' 
-																			+ cubicCurve.C + ',' 
-																			+ cubicCurve.D + ')';
+			pageStyle[iPage][browser.cssCore + 'TransitionTimingFunction'] = 'cubic-bezier(' 
+																		   + cubicCurve.A + ',' 
+																		   + cubicCurve.B + ',' 
+																		   + cubicCurve.C + ',' 
+																		   + cubicCurve.D + ')';
 		}
 
 		trans = function(o, x, y, t) {
@@ -228,7 +232,7 @@ function FullPage(options) {
 				c += t === 0 ? ' rotate(' + a.rotate[0] + 'deg)'
 							 : ' rotate(' + a.rotate[1] + 'deg)';
 			}
-			
+			s[browser.cssCore + 'TransformOrigin'] = '50% 50%';
 			s[browser.cssCore + 'Transform'] = c;
 		}
 	} else {
@@ -406,7 +410,7 @@ function FullPage(options) {
 
 		setTimeout(function() {
 
-			page[to]['style'][browser.cssCore + 'TransitionDuration'] = sTime + 'ms';
+			pageStyle[to][browser.cssCore + 'TransitionDuration'] = sTime + 'ms';
 		}, 20);
 
 		setTimeout(function() {
@@ -467,13 +471,176 @@ function FullPage(options) {
 				if (!browser.touch || !browser.addEventListener) break;
 				(function() {
 
-					var touchEvent = {},
-						start = {};
+					var pageIndexMax = pagelen - 1,
+						scaleStart = effect.transform.scale[0],
+						scaleDiff = effect.transform.scale[1] - effect.transform.scale[0],
+						rotateStart = effect.transform.rotate[0],
+						rotateDiff = effect.transform.rotate[1] - effect.transform.rotate[0],
+						touchEvent = {},
+						start = {},
+						delta = {},
+						isValidTouch = true,
+						prev,
+						next,
+						setIndex,
+						reset,
+						validReset,
+						move,
+						_interval;
+
+					if (effect.transform.translate === 'Y') {
+						setIndex = function() {
+
+							prev = pageStyle[indexNow - 1];
+							next = pageStyle[indexNow + 1];
+
+							if (prev) {
+								prev[browser.cssCore + 'Transform'] = 'translate(0,-' + pageRange.Y + 'px) translateZ(0)';
+								prev[browser.cssCore + 'TransformOrigin'] = '50% 100%';
+								page[indexNow - 1].className += ' swipe';
+							}
+							if (next) {
+								next[browser.cssCore + 'Transform'] = 'translate(0,' + pageRange.Y + 'px) translateZ(0)';
+								next[browser.cssCore + 'TransformOrigin'] = '50% 0%';
+								page[indexNow + 1].className += ' swipe';
+							}
+						}
+						move = function (o) {
+							
+							var pos = Math.abs(o.y / pageRange.Y),
+								_t = ' scale(' + scaleDiff * pos * .7
+								   + ') rotate(' + (rotateStart + rotateDiff * pos) + 'deg)';
+							
+							if (prev && o.y > 0) prev[browser.cssCore + 'Transform'] = 'translate(0,' + (o.y - pageRange.Y) + 'px) translateZ(0)' + _t;
+							if (next && o.y < 0) next[browser.cssCore + 'Transform'] = 'translate(0,' + (pageRange.Y + o.y) + 'px) translateZ(0)' + _t;
+						}
+						reset = function(s, n) {
+
+							var _t = sTime >> 1;
+							replaceClass(page[indexNow + n], 'swipe', 'slide');
+							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
+							s[browser.cssCore + 'Transform'] = 'translate(0,'+ n * pageRange.Y + 'px) translateZ(0)';
+							setTimeout(function() {
+								replaceClass(page[indexNow + n], 'slide', '');
+								setTimeout(function() {
+									_isLocked = false;
+								}, 50);
+							}, _t);
+						}
+						validReset = function(s, n) {
+
+							var to = indexNow + n,
+								_t = ~~(sTime / 1.5),
+								_o = page[indexNow - n];
+
+							if (_o) {
+								replaceClass(_o, 'swipe', '');
+							} 
+							if (to < 0 || to > pagelen - 1) {
+								setTimeout(function() {
+									_isLocked = false;
+								}, 50);
+								return;
+							}
+
+							if (_isNav) {
+								navChange(indexNow, to);
+							}
+							
+							replaceClass(page[to], 'swipe', 'slide');
+							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
+							s[browser.cssCore + 'Transform'] = 'translate(0,0) translateZ(0)';
+							setTimeout(function() {
+								replaceClass(page[indexNow], 'current', '');
+								replaceClass(page[to], 'slide', 'current');
+								indexNow = to;
+								setTimeout(function() {
+									_isLocked = false;
+								}, 50)
+							}, _t);
+						}
+					} else {
+						setIndex = function() {
+
+							prev = pageStyle[indexNow - 1];
+							next = pageStyle[indexNow + 1];
+
+							if (prev) {
+								prev[browser.cssCore + 'Transform'] = 'translate(-' + pageRange.X + 'px,0) translateZ(0)';
+								prev[browser.cssCore + 'TransformOrigin'] = '100% 50%';
+								page[indexNow - 1].className += ' swipe';
+							}
+							if (next) {
+								next[browser.cssCore + 'Transform'] = 'translate(' + pageRange.X + 'px,0) translateZ(0)';
+								next[browser.cssCore + 'TransformOrigin'] = '0 50%';
+								page[indexNow + 1].className += ' swipe';
+							}
+						}
+						move = function (o) {
+							
+							var pos = Math.abs(o.x / pageRange.X),
+								_t = ' scale(' + scaleDiff * pos * .7
+								   + ') rotate(' + (rotateStart + rotateDiff * pos) + 'deg)';
+							
+							if (prev && o.x > 0) prev[browser.cssCore + 'Transform'] = 'translate(' + (o.x - pageRange.X) + 'px,0) translateZ(0)' + _t;
+							if (next && o.x < 0) next[browser.cssCore + 'Transform'] = 'translate(' + (pageRange.X + o.x) + 'px,0) translateZ(0)' + _t;
+						}
+						reset = function(s, n) {
+
+							var _t = sTime >> 1;
+							replaceClass(page[indexNow + n], 'swipe', 'slide');
+							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
+							s[browser.cssCore + 'Transform'] = 'translate('+ n * pageRange.X + 'px,0) translateZ(0)';
+							setTimeout(function() {
+								replaceClass(page[indexNow + n], 'slide', '');
+								setTimeout(function() {
+									_isLocked = false;
+								}, 50);
+							}, _t);
+						}
+						validReset = function(s, n) {
+
+							var to = indexNow + n,
+								_t = ~~(sTime / 1.5),
+								_o = page[indexNow - n];
+
+							if (_o) {
+								replaceClass(_o, 'swipe', '');
+							} 
+							if (to < 0 || to > pagelen - 1) {
+								setTimeout(function() {
+									_isLocked = false;
+								}, 50);
+								return;
+							}
+
+							if (_isNav) {
+								navChange(indexNow, to);
+							}
+							
+							replaceClass(page[to], 'swipe', 'slide');
+							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
+							s[browser.cssCore + 'Transform'] = 'translate(0,0) translateZ(0)';
+							setTimeout(function() {
+								replaceClass(page[indexNow], 'current', '');
+								replaceClass(page[to], 'slide', 'current');
+								indexNow = to;
+								setTimeout(function() {
+									_isLocked = false;
+								}, 50)
+							}, _t);
+						}
+					}
+
 
 					touchEvent = {
 						start : function(e) {
 
 							var touches = e.touches[0];
+
+							e.preventDefault();
+							if (_isLocked) return;
+							_isLocked = true;
 
 							start = {
 								x : touches.pageX,
@@ -481,21 +648,34 @@ function FullPage(options) {
 								time : +new Date
 							}
 
+							delta = {};
+
+							setIndex();
+
 							pageContain.addEventListener('touchmove', touchEvent.move, false);
 							pageContain.addEventListener('touchend', touchEvent.end, false);
 						},
 						move : function(e) {
+
+							var touches = e.touches[0];
+
+							e.preventDefault();
 							// ensure swiping with one touch and not pinching
       						if ( event.touches.length > 1 || event.scale && event.scale !== 1) return
-							e.preventDefault();
+
+							delta = {
+								x : touches.pageX - start.x,
+								y : touches.pageY - start.y
+							}
+
+							move(delta);
 						},
 						end : function(e) {
 
 							var touches = e.changedTouches[0],
 								duration = +new Date - start.time,
-								delta = {},
 								abs = {},
-								next = 0,
+								nextDiff = 0,
 								isValidSlide = false;
 
 							delta = {
@@ -510,37 +690,46 @@ function FullPage(options) {
 							switch (options.effect.transform['translate']) {
 								case 'Y' :
 								isValidSlide = 
-									+  duration < 250 && abs.y > 20
+									+  duration < 250 && abs.y > 30
 									|| abs.y > pageRange.Y * .3;
-								next = delta.y > 0 ? -1 : 1;
+								nextDiff = delta.y > 0 ? -1 : 1;
 								break;
 
 								case 'X' :
 								isValidSlide = 
-									+  duration < 250 && abs.x > 20
-									|| abs.x > pageRange.Y * .4;
-								next = delta.x > 0 ? -1 : 1;
+									+  duration < 250 && abs.x > 30
+									|| abs.x > pageRange.X * .3;
+								nextDiff = delta.x > 0 ? -1 : 1;
 								break;
 
 								default :
 								isValidSlide = 
-									+  duration < 250 && abs.y + abs.x > 50
-									|| abs.y > pageRange.Y * .2
+									+  duration < 350 && abs.y + abs.x > 50
+									|| abs.y > pageRange.Y * .3
 									|| abs.x > pageRange.X * .3;
-								next = abs.x > abs.y ? 
+								nextDiff = abs.x > abs.y ? 
 									   delta.x > 0 ? -1 : 1
 									 : delta.y > 0 ? -1 : 1;
 								break;
 							}
-							if (isValidSlide) {
-								goPage(indexNow + next);
+							
+							
+							if (!isValidSlide) {
+								if (prev) reset(prev, - 1);
+								if (next) reset(next, + 1);
+							} else {
+								if (nextDiff === -1) {
+									validReset(prev, -1);
+								} else {
+									validReset(next, 1);
+								}
 							}
 							pageContain.removeEventListener('touchmove', touchEvent.move, false);
 							pageContain.removeEventListener('touchend', touchEvent.end, false);
+
 						}
 
 					}
-
 
 					pageContain.addEventListener('touchstart', touchEvent.start, false);
 				}());

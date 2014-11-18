@@ -32,8 +32,6 @@
     	display: none;
     	width: 100%;
     	height: 100%;
-    	border-radius: 4px;
-    	box-shadow: 1px 1px 12px 1px #333;
     	overflow: hidden;
     	position: absolute;
     	top: 0;
@@ -56,6 +54,12 @@
     .slide {
     	display: block;
     	z-index: 2;
+    }
+    .swipe {
+        display: block;
+        z-index: 3;
+        transition-duration: 0ms !important;
+        -webkit-transition-duration: 0ms !important;
     }
     .page1 {
     	background: #37c1e3;
@@ -162,7 +166,7 @@ runPage = new FullPage({
         transform : {
         	translate : 'Y',					   // 'X'|'Y'|'XY'|'none'
         	scale : [.1, 1],					   // [scalefrom, scaleto]
-        	rotate : [360, 0]					   // [rotatefrom, rotateto]
+        	rotate : [270, 0]					   // [rotatefrom, rotateto]
         },
         opacity : [0, 1]                           // [opacityfrom, opacityto]
     },                           

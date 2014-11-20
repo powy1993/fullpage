@@ -163,11 +163,13 @@ function FullPage(options) {
 		
 		var i = pagelen;
 
-		pageContain.style.height = document.documentElement.clientHeight + 'px' || window.innerHeight + 'px';
 		pageRange = {
-			X : pageContain.offsetWidth,
-			Y : pageContain.offsetHeight
+			X : document.documentElement.clientWidth || window.innerWidth,
+			Y : document.documentElement.clientHeight || window.innerHeight
 		}
+
+		pageContain.style.height = pageRange.Y + 'px';
+
 	}
 
 	setCubic = function(a, b, c, d) {
@@ -722,6 +724,9 @@ function FullPage(options) {
 									validReset(prev, -1);
 								} else {
 									validReset(next, 1);
+								}
+								if (options.callback) {
+									options.callback(indexNow, page[indexNow]);
 								}
 							}
 							pageContain.removeEventListener('touchmove', touchEvent.move, false);

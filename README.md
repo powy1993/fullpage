@@ -12,10 +12,15 @@ Without jQuery.Less than 6KB.
 
 你可以用它来构建你的个人主页或者网页应用
 
-这是一个不使用jQuery小巧的框架 不到5KB
+这是一个不使用jQuery小巧的框架 不到9KB
 
 
 This is a [Demo](http://1.fullpagechris.sinaapp.com/fullpage.html).
+
+Here are some examples which use fullpage.
+
+[PC](http://henan.qq.com/zt/2014/loveHenan/csindex.htm)
+[Mobile](http://henan.qq.com/zt/2014/loveHenan/index-mob.htm)
 
 Enjoy!
 

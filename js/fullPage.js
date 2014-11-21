@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.18
+ * 2014.11.21
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -556,6 +556,9 @@ function FullPage(options) {
 								replaceClass(page[indexNow], 'current', '');
 								replaceClass(page[to], 'slide', 'current');
 								indexNow = to;
+								if (options.callback) {
+									options.callback(indexNow, page[indexNow]);
+								}
 								setTimeout(function() {
 									_isLocked = false;
 								}, 50)
@@ -627,6 +630,9 @@ function FullPage(options) {
 								replaceClass(page[indexNow], 'current', '');
 								replaceClass(page[to], 'slide', 'current');
 								indexNow = to;
+								if (options.callback) {
+									options.callback(indexNow, page[indexNow]);
+								}
 								setTimeout(function() {
 									_isLocked = false;
 								}, 50)
@@ -724,9 +730,6 @@ function FullPage(options) {
 									validReset(prev, -1);
 								} else {
 									validReset(next, 1);
-								}
-								if (options.callback) {
-									options.callback(indexNow, page[indexNow]);
 								}
 							}
 							pageContain.removeEventListener('touchmove', touchEvent.move, false);

@@ -5,7 +5,7 @@ for desktop(ie5.5+) and mobile
 
 You can use it for creating your personal pages and webApp.
 
-Without jQuery.Less than 6KB.
+Without jQuery.Less than 9KB.
 
 
 兼容桌面端(ie5.5+) 和 手机端
@@ -33,8 +33,8 @@ Fullpage only needs to follow a simple pattern. Here is an example:
 		<div class="contain">
 			<!-- your own code here-->
 		</div>
-		<!-- ect.. -->
 	</div>
+    <!-- ect.. -->
 </div>
 
 <!--alternative-->

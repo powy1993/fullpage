@@ -17,7 +17,7 @@ Without jQuery.Less than 9KB.
 
 This is a [Demo](http://1.fullpagechris.sinaapp.com/fullpage.html).
 
- `Help! I want to make it AUTOPLAY! [Demo like this](http://1.fullpagechris.sinaapp.com/autoPlay.html)`
+  - Help! I want to make it AUTOPLAY! [Demo like this](http://1.fullpagechris.sinaapp.com/autoPlay.html)
 
 Here are some examples which use fullpage.
 

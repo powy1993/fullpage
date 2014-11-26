@@ -303,6 +303,53 @@ body {
     -ms-animation:bgR 20s linear 0s infinite alternate both;
     animation:bgR 20s linear 0s infinite alternate both;
 }
+
+@media screen and (max-width: 680px) {
+	.nav ul {
+		display: none;
+	}
+	.nav span {
+		font-size: 22px;
+	}
+	.page1 p {
+		font-size: 14px;
+	}
+	#next,#prev {
+		display: none;
+	}
+	.page1-box {
+		margin-left: -91px;
+		margin-top: -90px;
+		width: 182px;
+		height: 173px;
+	}
+	.page2-box {
+		margin-left: -160px;
+		margin-top: -70px;
+		width: 320px;
+		height: 140px;
+	}
+	.page3-box {
+		margin-left: -60px;
+		margin-top: -50px;
+		width: 160px;
+		height: 100px;
+	}
+	.page4-box {
+		margin-left: -91px;
+		margin-top: -90px;
+		width: 182px;
+		height: 173px;
+	}
+	.title {
+		font-size: 30px;
+		letter-spacing: 2px;
+	}
+	.titleEng {
+		font-size: 18px;
+	}
+}
+
 @keyframes dragTop {
     0% {
         opacity:0;

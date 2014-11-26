@@ -19,6 +19,8 @@ This is a [Demo](http://1.fullpagechris.sinaapp.com/fullpage.html).
 
   - Help! I want to make it AUTOPLAY! [Demo like this](http://1.fullpagechris.sinaapp.com/autoPlay.html)
 
+  - I want a SPECIFIC example! [Demo like this](http://1.fullpagechris.sinaapp.com/index.html)
+
 Here are some examples which use fullpage.
 
 [PC](http://henan.qq.com/zt/2014/loveHenan/csindex.htm)

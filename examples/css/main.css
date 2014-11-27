@@ -303,6 +303,9 @@ body {
     -ms-animation:bgR 20s linear 0s infinite alternate both;
     animation:bgR 20s linear 0s infinite alternate both;
 }
+.section1 .contain {
+	display: block !important;
+}
 
 @media screen and (max-width: 680px) {
 	.nav ul {

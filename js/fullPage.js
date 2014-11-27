@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.21
+ * 2014.11.27
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -646,7 +646,6 @@ function FullPage(options) {
 
 							var touches = e.touches[0];
 
-							e.preventDefault();
 							if (_isLocked) return;
 							_isLocked = true;
 

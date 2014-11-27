@@ -752,7 +752,7 @@ function FullPage(options) {
 							}
 							
 							
-							if (!isValidSlide) {
+							if (!isValidSlide || !_t) {
 								if (prev) reset(prev, - 1);
 								if (next) reset(next, + 1);
 							} else {

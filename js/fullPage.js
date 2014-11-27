@@ -475,20 +475,23 @@ function FullPage(options) {
 
 					var pageIndexMax = pagelen - 1,
 						scaleStart = effect.transform.scale[0],
-						scaleDiff = effect.transform.scale[1] - effect.transform.scale[0],
+						scaleDiff = effect.transform.scale[1] - scaleStart,
 						rotateStart = effect.transform.rotate[0],
-						rotateDiff = effect.transform.rotate[1] - effect.transform.rotate[0],
+						rotateDiff = effect.transform.rotate[1] - rotateStart,
+						opacityStart = effect.opacity[0],
+						opacityDiff = effect.opacity[1] - opacityStart,
 						touchEvent = {},
 						start = {},
 						delta = {},
-						isValidTouch = true,
+						isValidMove = false,
 						prev,
 						next,
 						setIndex,
 						reset,
 						validReset,
 						move,
-						_interval;
+						_interval,
+						_t;
 
 					if (effect.transform.translate === 'Y') {
 						setIndex = function() {
@@ -497,11 +500,13 @@ function FullPage(options) {
 							next = pageStyle[indexNow + 1];
 
 							if (prev) {
+								prev[browser.cssCore + 'TransitionDuration'] = '0ms';
 								prev[browser.cssCore + 'Transform'] = 'translate(0,-' + pageRange.Y + 'px) translateZ(0)';
 								prev[browser.cssCore + 'TransformOrigin'] = '50% 100%';
 								page[indexNow - 1].className += ' swipe';
 							}
 							if (next) {
+								next[browser.cssCore + 'TransitionDuration'] = '0ms';
 								next[browser.cssCore + 'Transform'] = 'translate(0,' + pageRange.Y + 'px) translateZ(0)';
 								next[browser.cssCore + 'TransformOrigin'] = '50% 0%';
 								page[indexNow + 1].className += ' swipe';
@@ -510,16 +515,23 @@ function FullPage(options) {
 						move = function (o) {
 							
 							var pos = Math.abs(o.y / pageRange.Y),
-								_t = ' scale(' + scaleDiff * pos * .7
+								_t = ' scale(' + (scaleStart + scaleDiff * pos)
 								   + ') rotate(' + (rotateStart + rotateDiff * pos) + 'deg)';
 							
-							if (prev && o.y > 0) prev[browser.cssCore + 'Transform'] = 'translate(0,' + (o.y - pageRange.Y) + 'px) translateZ(0)' + _t;
-							if (next && o.y < 0) next[browser.cssCore + 'Transform'] = 'translate(0,' + (pageRange.Y + o.y) + 'px) translateZ(0)' + _t;
+							if (prev && o.y > 0) {
+								prev.opacity = (opacityStart + opacityDiff * pos);
+								prev[browser.cssCore + 'Transform'] = 'translate(0,' + (o.y - pageRange.Y) + 'px) translateZ(0)' + _t;
+							}
+							if (next && o.y < 0) {
+								next.opacity = (opacityStart + opacityDiff * pos);
+								next[browser.cssCore + 'Transform'] = 'translate(0,' + (pageRange.Y + o.y) + 'px) translateZ(0)' + _t;
+							}
 						}
 						reset = function(s, n) {
 
 							var _t = sTime >> 1;
 							replaceClass(page[indexNow + n], 'swipe', 'slide');
+							s.opacity = 1;
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate(0,'+ n * pageRange.Y + 'px) translateZ(0)';
 							setTimeout(function() {
@@ -549,6 +561,7 @@ function FullPage(options) {
 								navChange(indexNow, to);
 							}
 							
+							s.opacity = 1;
 							replaceClass(page[to], 'swipe', 'slide');
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate(0,0) translateZ(0)';
@@ -571,11 +584,13 @@ function FullPage(options) {
 							next = pageStyle[indexNow + 1];
 
 							if (prev) {
+								prev[browser.cssCore + 'TransitionDuration'] = '0ms';
 								prev[browser.cssCore + 'Transform'] = 'translate(-' + pageRange.X + 'px,0) translateZ(0)';
 								prev[browser.cssCore + 'TransformOrigin'] = '100% 50%';
 								page[indexNow - 1].className += ' swipe';
 							}
 							if (next) {
+								next[browser.cssCore + 'TransitionDuration'] = '0ms';
 								next[browser.cssCore + 'Transform'] = 'translate(' + pageRange.X + 'px,0) translateZ(0)';
 								next[browser.cssCore + 'TransformOrigin'] = '0 50%';
 								page[indexNow + 1].className += ' swipe';
@@ -584,16 +599,24 @@ function FullPage(options) {
 						move = function (o) {
 							
 							var pos = Math.abs(o.x / pageRange.X),
-								_t = ' scale(' + scaleDiff * pos * .7
+								_t = ' scale(' + (scaleStart + scaleDiff * pos)
 								   + ') rotate(' + (rotateStart + rotateDiff * pos) + 'deg)';
 							
-							if (prev && o.x > 0) prev[browser.cssCore + 'Transform'] = 'translate(' + (o.x - pageRange.X) + 'px,0) translateZ(0)' + _t;
-							if (next && o.x < 0) next[browser.cssCore + 'Transform'] = 'translate(' + (pageRange.X + o.x) + 'px,0) translateZ(0)' + _t;
+							if (prev && o.x > 0) {
+								console.log()
+								prev.opacity = (opacityStart + opacityDiff * pos);
+								prev[browser.cssCore + 'Transform'] = 'translate(' + (o.x - pageRange.X) + 'px,0) translateZ(0)' + _t;
+							}
+							if (next && o.x < 0) {
+								next.opacity = (opacityStart + opacityDiff * pos);
+								next[browser.cssCore + 'Transform'] = 'translate(' + (pageRange.X + o.x) + 'px,0) translateZ(0)' + _t;
+							}
 						}
 						reset = function(s, n) {
 
 							var _t = sTime >> 1;
 							replaceClass(page[indexNow + n], 'swipe', 'slide');
+							s.opacity = 1;
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate('+ n * pageRange.X + 'px,0) translateZ(0)';
 							setTimeout(function() {
@@ -624,6 +647,7 @@ function FullPage(options) {
 							}
 							
 							replaceClass(page[to], 'swipe', 'slide');
+							s.opacity = 1;
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate(0,0) translateZ(0)';
 							setTimeout(function() {
@@ -655,7 +679,9 @@ function FullPage(options) {
 								time : +new Date
 							}
 
+							// reset
 							delta = {};
+							isValidMove = false;
 
 							setIndex();
 
@@ -674,8 +700,13 @@ function FullPage(options) {
 								x : touches.pageX - start.x,
 								y : touches.pageY - start.y
 							}
-
-							move(delta);
+							if (!isValidMove) {
+								_t = Math.abs(delta.x) > Math.abs(delta.y) ? 'X' : 'Y';
+								_t = _t === options.effect.transform['translate'] ? true : false;
+								isValidMove = true;
+							} else {
+								if (_t) move(delta);
+							}
 						},
 						end : function(e) {
 

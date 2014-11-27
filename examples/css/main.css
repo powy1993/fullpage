@@ -33,7 +33,7 @@ body {
 	overflow: hidden;
 }
 .page {
-    box-shadow: 0 0 14px 0 #666;
+    box-shadow: 1px 1px 4px 0 #000;
 	display: none;
 	width: 100%;
 	height: 100%;

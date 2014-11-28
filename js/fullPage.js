@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.27
+ * 2014.11.28
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -331,13 +331,19 @@ function FullPage(options) {
 	}
 
 	if (browser.addEventListener && browser.touch) {
-		onTap = function (o, fn) {
-			o.addEventListener('touchstart', fn, false);
-			if (arguments[2]) {       
-				// if we touch on navBar we should stop scroll
-				o.addEventListener('touchmove', function(e) {
-					e.preventDefault();
-				}, false);
+		if (navigator.userAgent.indexOf('Firefox')) {
+			onTap = function(o, fn) {
+				o.addEventListener('click', fn, false);
+			}
+		} else {
+			onTap = function (o, fn) {
+				o.addEventListener('touchstart', fn, false);
+				if (arguments[2]) {       
+					// if we touch on navBar we should stop scroll
+					o.addEventListener('touchmove', function(e) {
+						e.preventDefault();
+					}, false);
+				}
 			}
 		}
 	} else {

@@ -7,7 +7,6 @@ You can use it for creating your personal pages and webApp.
 
 Without jQuery.Less than 9KB.
 
-
 兼容桌面端(ie5.5+) 和 手机端
 
 你可以用它来构建你的个人主页或者网页应用

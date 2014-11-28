@@ -22,7 +22,7 @@ This is a [Demo](http://1.fullpagechris.sinaapp.com/fullpage.html).
 
 Here are some examples which use fullpage.
 
-[PC](http://henan.qq.com/zt/2014/loveHenan/csindex.htm)
+[PC](http://henan.qq.com/zt/2014/loveHenan/index.htm)
 [Mobile](http://henan.qq.com/zt/2014/loveHenan/index-mob.htm)
 
 Enjoy!

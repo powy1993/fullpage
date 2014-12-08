@@ -1,7 +1,7 @@
 /* 
  * Chriswang
  * 396276123@qq.com
- * 2014.11.28
+ * 2014.12.8
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -36,6 +36,7 @@ function FullPage(options) {
 		resetAndRun,
 		onTap,
 		replaceClass,
+		roundPage,
 		goPage,
 		navChange,
 		wheelScroll;
@@ -390,16 +391,26 @@ function FullPage(options) {
 		}
 	}
 
+	if (options.continuous) {
+		roundPage = function(page) {
+			return (pagelen + page % pagelen) % pagelen
+		}
+	}
+
 	goPage = function(to) {
 
 		var fix = _fix,
 			indexOld,
 			_effectNow;
 
-		if (_isLocked                 // make sure translate is already
-			|| to === indexNow		  // don't translate if thispage
-			|| to >= pagelen 		  // more than max page
-			|| to < 0) return;		  // less than min page(0)
+		if (_isLocked                 			// make sure translate is already
+			|| to === indexNow) return;			// don't translate if thispage
+
+		if (options.continuous) {
+			to = roundPage(to)
+		} else {
+			if (to >= pagelen || to < 0) return;
+		}
 
 		_isLocked = true;
 		

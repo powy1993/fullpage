@@ -512,21 +512,27 @@ function FullPage(options) {
 
 					if (effect.transform.translate === 'Y') {
 						setIndex = function() {
+							var pr = indexNow - 1, 
+								ne = indexNow + 1;
 
-							prev = pageStyle[indexNow - 1];
-							next = pageStyle[indexNow + 1];
+							if (options.continuous) {
+								pr = roundPage(pr);
+								ne = roundPage(ne);
+							}
+							prev = pageStyle[pr];
+							next = pageStyle[ne];
 
 							if (prev) {
 								prev[browser.cssCore + 'TransitionDuration'] = '0ms';
 								prev[browser.cssCore + 'Transform'] = 'translate(0,-' + pageRange.Y + 'px) translateZ(0)';
 								prev[browser.cssCore + 'TransformOrigin'] = '50% 100%';
-								page[indexNow - 1].className += ' swipe';
+								page[pr].className += ' swipe';
 							}
 							if (next) {
 								next[browser.cssCore + 'TransitionDuration'] = '0ms';
 								next[browser.cssCore + 'Transform'] = 'translate(0,' + pageRange.Y + 'px) translateZ(0)';
 								next[browser.cssCore + 'TransformOrigin'] = '50% 0%';
-								page[indexNow + 1].className += ' swipe';
+								page[ne].className += ' swipe';
 							}
 						}
 						move = function (o) {
@@ -546,13 +552,18 @@ function FullPage(options) {
 						}
 						reset = function(s, n) {
 
-							var _t = sTime >> 1;
-							replaceClass(page[indexNow + n], 'swipe', 'slide');
+							var _t = sTime >> 1,
+								ne = indexNow + n;
+
+							if (options.continuous) {
+								ne = roundPage(ne);
+							}
+							replaceClass(page[ne], 'swipe', 'slide');
 							s.opacity = 1;
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate(0,'+ n * pageRange.Y + 'px) translateZ(0)';
 							setTimeout(function() {
-								replaceClass(page[indexNow + n], 'slide', '');
+								replaceClass(page[ne], 'slide', '');
 								setTimeout(function() {
 									_isLocked = false;
 								}, 50);
@@ -562,12 +573,21 @@ function FullPage(options) {
 
 							var to = indexNow + n,
 								_t = ~~(sTime / 1.5),
+								_o,
+								_f;
+
+							if (options.continuous) {
+								to = roundPage(to);
+								_o = page[ roundPage(indexNow - n) ];
+								_f = true;
+							} else {
 								_o = page[indexNow - n];
+							}
 
 							if (_o) {
 								replaceClass(_o, 'swipe', '');
 							} 
-							if (to < 0 || to > pagelen - 1) {
+							if (!_f && to < 0 || to > pagelen - 1) {
 								setTimeout(function() {
 									_isLocked = false;
 								}, 50);
@@ -597,20 +617,27 @@ function FullPage(options) {
 					} else {
 						setIndex = function() {
 
-							prev = pageStyle[indexNow - 1];
-							next = pageStyle[indexNow + 1];
+							var pr = indexNow - 1, 
+								ne = indexNow + 1;
+
+							if (options.continuous) {
+								pr = roundPage(pr);
+								ne = roundPage(ne);
+							}
+							prev = pageStyle[pr];
+							next = pageStyle[ne];
 
 							if (prev) {
 								prev[browser.cssCore + 'TransitionDuration'] = '0ms';
 								prev[browser.cssCore + 'Transform'] = 'translate(-' + pageRange.X + 'px,0) translateZ(0)';
 								prev[browser.cssCore + 'TransformOrigin'] = '100% 50%';
-								page[indexNow - 1].className += ' swipe';
+								page[pr].className += ' swipe';
 							}
 							if (next) {
 								next[browser.cssCore + 'TransitionDuration'] = '0ms';
 								next[browser.cssCore + 'Transform'] = 'translate(' + pageRange.X + 'px,0) translateZ(0)';
 								next[browser.cssCore + 'TransformOrigin'] = '0 50%';
-								page[indexNow + 1].className += ' swipe';
+								page[ne].className += ' swipe';
 							}
 						}
 						move = function (o) {
@@ -631,13 +658,19 @@ function FullPage(options) {
 						}
 						reset = function(s, n) {
 
-							var _t = sTime >> 1;
-							replaceClass(page[indexNow + n], 'swipe', 'slide');
+							var _t = sTime >> 1,
+								ne = indexNow + n;
+
+							if (options.continuous) {
+								ne = roundPage(ne);
+							}
+							replaceClass(page[ne], 'swipe', 'slide');
+
 							s.opacity = 1;
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate('+ n * pageRange.X + 'px,0) translateZ(0)';
 							setTimeout(function() {
-								replaceClass(page[indexNow + n], 'slide', '');
+								replaceClass(page[ne], 'slide', '');
 								setTimeout(function() {
 									_isLocked = false;
 								}, 50);
@@ -647,12 +680,21 @@ function FullPage(options) {
 
 							var to = indexNow + n,
 								_t = ~~(sTime / 1.5),
+								_o,
+								_f;
+
+							if (options.continuous) {
+								to = roundPage(to);
+								_o = page[ roundPage(indexNow - n) ];
+								_f = true;
+							} else {
 								_o = page[indexNow - n];
+							}
 
 							if (_o) {
 								replaceClass(_o, 'swipe', '');
 							} 
-							if (to < 0 || to > pagelen - 1) {
+							if (!_f && to < 0 || to > pagelen - 1) {
 								setTimeout(function() {
 									_isLocked = false;
 								}, 50);

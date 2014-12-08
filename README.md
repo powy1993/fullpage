@@ -55,17 +55,18 @@ Above is the initial required structure– a series of elements wrapped in two c
 runPage = new FullPage({
 	id : 'pageContain',                            // id of contain
 	slideTime : 800,                               // time of slide(ms)
-    effect : {                                     // slide effect
-        transform : {							   // tranform
+  continuous true,                               // create an infinite feel with no endpoints
+    effect : {                                   // slide effect
+        transform : {							     // tranform
         	translate : 'Y',					   // 'X'|'Y'|'XY'|'none'
         	scale : [.1, 1],					   // [scalefrom, scaleto]
         	rotate : [90, 0]					   // [rotatefrom, rotateto]
         },                  					   
-        opacity : [0, 1]                           // [opacityfrom, opacityto]
+        opacity : [0, 1]               // [opacityfrom, opacityto]
     },                           
-	mode : 'wheel,touch,nav:navBar',               // mode of fullpage
-	easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use 
-												   // cubic-bezier like [.33, 1.81, 1, 1])
+	mode : 'wheel,touch,nav:navBar',     // mode of fullpage
+	easing : 'ease'                      // easing('ease','ease-in','ease-in-out' or use 
+                                       // cubic-bezier like [.33, 1.81, 1, 1])
     //  callback : function(index, thisPage) {     // callback when pageChange
         
     //  }
@@ -82,6 +83,8 @@ I always place this at the bottom of the page, externally, to verify the page is
 - **slideTime** Integer *(default:800)* - 每页切换时间(毫秒)
 
 - **effect** Object *(default:{})* - 效果参数
+
+- **continuous** Boolean *(default:false)* - 是否循环(即能从最后页跳到第一页面)
 
   - transform
 

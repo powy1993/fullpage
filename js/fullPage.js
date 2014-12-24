@@ -1,7 +1,13 @@
 /* 
+<<<<<<< HEAD
  * rusherwang
  * rusherwang@tencent.com
  * 2014.12.24
+=======
+ * Chriswang
+ * 396276123@qq.com
+ * 2014.12.8
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -487,7 +493,11 @@ function FullPage(options) {
 				break;
 
 				case m === 'touch' :
+<<<<<<< HEAD
 				if (!browser.addEventListener) break;
+=======
+				if (!browser.touch || !browser.addEventListener) break;
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 				(function() {
 
 					var pageIndexMax = pagelen - 1,
@@ -501,7 +511,10 @@ function FullPage(options) {
 						start = {},
 						delta = {},
 						isValidMove = false,
+<<<<<<< HEAD
 						isWindowsPhone = navigator.userAgent.indexOf('Windows Phone') === -1 ? false : true,
+=======
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 						prev,
 						next,
 						setIndex,
@@ -509,6 +522,7 @@ function FullPage(options) {
 						validReset,
 						move,
 						_interval,
+<<<<<<< HEAD
 						_touch,
 						_t;
 
@@ -528,6 +542,10 @@ function FullPage(options) {
 
 					if (!_touch) return;
 
+=======
+						_t;
+
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 					if (effect.transform.translate === 'Y') {
 						setIndex = function() {
 							var pr = indexNow - 1, 
@@ -745,7 +763,11 @@ function FullPage(options) {
 					touchEvent = {
 						start : function(e) {
 
+<<<<<<< HEAD
 							var touches = e.touches ? e.touches[0] : e;
+=======
+							var touches = e.touches[0];
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 
 							if (_isLocked) return;
 							_isLocked = true;
@@ -762,6 +784,7 @@ function FullPage(options) {
 
 							setIndex();
 
+<<<<<<< HEAD
 							pageContain.addEventListener(_touch.move, touchEvent.move, false);
 							pageContain.addEventListener(_touch.end, touchEvent.end, false);
 						},
@@ -774,6 +797,18 @@ function FullPage(options) {
       						if (browser.touch 
       							&& (event.touches.length > 1 
       								|| event.scale && event.scale !== 1)) return
+=======
+							pageContain.addEventListener('touchmove', touchEvent.move, false);
+							pageContain.addEventListener('touchend', touchEvent.end, false);
+						},
+						move : function(e) {
+
+							var touches = e.touches[0];
+
+							e.preventDefault();
+							// ensure swiping with one touch and not pinching
+      						if ( event.touches.length > 1 || event.scale && event.scale !== 1) return
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 
 							delta = {
 								x : touches.pageX - start.x,
@@ -789,7 +824,11 @@ function FullPage(options) {
 						},
 						end : function(e) {
 
+<<<<<<< HEAD
 							var touches = e.changedTouches ? e.changedTouches[0] : e,
+=======
+							var touches = e.changedTouches[0],
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 								duration = +new Date - start.time,
 								abs = {},
 								nextDiff = 0,
@@ -841,14 +880,23 @@ function FullPage(options) {
 									validReset(next, 1);
 								}
 							}
+<<<<<<< HEAD
 							pageContain.removeEventListener(_touch.move, touchEvent.move, false);
 							pageContain.removeEventListener(_touch.end, touchEvent.end, false);
+=======
+							pageContain.removeEventListener('touchmove', touchEvent.move, false);
+							pageContain.removeEventListener('touchend', touchEvent.end, false);
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 
 						}
 
 					}
 
+<<<<<<< HEAD
 					pageContain.addEventListener(_touch.start, touchEvent.start, false);
+=======
+					pageContain.addEventListener('touchstart', touchEvent.start, false);
+>>>>>>> 72000cabd04d75332379370e4b52a6a65b17ce45
 				}());
 				break;
 

@@ -1,7 +1,7 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.12.24
+ * 2014.1.13
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -527,6 +527,13 @@ function FullPage(options) {
 					}
 
 					if (!_touch) return;
+					document.body.ontouchmove = function(e) {
+						if (e.preventDefault) {
+							e.preventDefault();
+						} else {
+							e.returnValue = false;
+						}
+					}
 
 					if (effect.transform.translate === 'Y') {
 						setIndex = function() {

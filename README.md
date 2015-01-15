@@ -53,23 +53,25 @@ Above is the initial required structure– a series of elements wrapped in two c
 ``` js
 
 runPage = new FullPage({
-	id : 'pageContain',                            // id of contain
-	slideTime : 800,                               // time of slide(ms)
-  continuous true,                               // create an infinite feel with no endpoints
-    effect : {                                   // slide effect
-        transform : {							     // tranform
-        	translate : 'Y',					   // 'X'|'Y'|'XY'|'none'
-        	scale : [.1, 1],					   // [scalefrom, scaleto]
-        	rotate : [90, 0]					   // [rotatefrom, rotateto]
-        },                  					   
-        opacity : [0, 1]               // [opacityfrom, opacityto]
-    },                           
-	mode : 'wheel,touch,nav:navBar',     // mode of fullpage
-	easing : 'ease'                      // easing('ease','ease-in','ease-in-out' or use 
-                                       // cubic-bezier like [.33, 1.81, 1, 1])
-    //  callback : function(index, thisPage) {     // callback when pageChange
-        
+  id : 'pageContain',                            // id of contain
+  slideTime : 800,                               // time of slide
+  continuous : true,                             // create an infinite feel with no endpoints
+  effect : {                                     // slide effect
+          transform : {
+            translate : 'Y',           // 'X'|'Y'|'XY'|'none'
+            scale : [.1, 1],           // [scalefrom, scaleto]
+            rotate : [270, 0]          // [rotatefrom, rotateto]
+          },
+          opacity : [0, 1]                       // [opacityfrom, opacityto]
+      },                           
+  mode : 'wheel,touch,nav:navBar',               // mode of fullpage
+  easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1];
+    //  ,beforeChange : function(index, thisPage) {   // callback before pageChange
+    //    alert(index);
     //  }
+    //  ,callback : function(index, thisPage) {       // callback when pageChange
+    //    alert(index);
+    //  };
 });
 
 ```
@@ -95,6 +97,8 @@ I always place this at the bottom of the page, externally, to verify the page is
   - opacity     Array  透明度   [opacityfrom, opacityto] 表示 [起始透明度, 结束时透明度]
 
 - **mode** String *(default:'')* - 转换模式 'wheel,touch,nav:navBar' 表示 '滚轮,触摸,导航条:导航条id'
+
+- **beforeChange** Function - 滑动开始时的回调函数
 
 - **callback** Function - 滑动结束后的回调函数
 

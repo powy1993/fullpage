@@ -1,7 +1,7 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.1.13
+ * 2014.1.15
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -432,6 +432,10 @@ function FullPage(options) {
 			pageStyle[to][browser.cssCore + 'TransitionDuration'] = sTime + 'ms';
 		}, 20);
 
+		if (options.beforeChange) {
+			options.beforeChange(indexOld, page[indexOld]);
+		}
+
 		setTimeout(function() {
 
 			replaceClass(page[indexOld], 'current', '');
@@ -842,6 +846,9 @@ function FullPage(options) {
 								if (prev) reset(prev, - 1);
 								if (next) reset(next, + 1);
 							} else {
+								if (options.beforeChange) {
+									options.beforeChange(indexNow, page[indexNow]);
+								}
 								if (nextDiff === -1) {
 									validReset(prev, -1);
 								} else {

@@ -1,7 +1,7 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.1.15
+ * 2014.1.16
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -103,7 +103,7 @@ function FullPage(options) {
 	}
 
 	UnitBezier.prototype = {
-		epsilon : 1e-5,     // Precision  
+		epsilon : 1e-2,     // Precision  
 		sampleCurveX : function(t) {
 	    	return ((this.ax * t + this.bx) * t + this.cx) * t;
 		},
@@ -279,7 +279,7 @@ function FullPage(options) {
 								  + 'px;top:' + (cy + dy * pos) 
 								  + 'px;'
 					if (e) {
-						_t += 'filter:alpha(opacity=' + 100 * ( e[1] * pos - e[0] * (1 - pos) )+ ');'
+						_t += 'filter:alpha(opacity=' + ~~(100 * (e[1] * pos - e[0] * (1 - pos)))+ ');'
 					}
 				}
 				s.cssText = _t;
@@ -567,16 +567,16 @@ function FullPage(options) {
 						move = function (o) {
 							
 							var pos = Math.abs(o.y / pageRange.Y),
-								_t = ' scale(' + (scaleStart + scaleDiff * pos)
-								   + ') rotate(' + (rotateStart + rotateDiff * pos) + 'deg)';
+								_t = ' scale(' + ~~(100 * (scaleStart + scaleDiff * pos)) / 100
+								   + ') rotate(' + ~~(rotateStart + rotateDiff * pos) + 'deg)';
 							
 							if (prev && o.y > 0) {
-								prev.opacity = (opacityStart + opacityDiff * pos);
-								prev[browser.cssCore + 'Transform'] = 'translate(0,' + (o.y - pageRange.Y) + 'px) translateZ(0)' + _t;
+								prev.opacity = ~~(100 * (opacityStart + opacityDiff * pos)) / 100;
+								prev[browser.cssCore + 'Transform'] = 'translate(0,' + ~~(o.y - pageRange.Y) + 'px) translateZ(0)' + _t;
 							}
 							if (next && o.y < 0) {
-								next.opacity = (opacityStart + opacityDiff * pos);
-								next[browser.cssCore + 'Transform'] = 'translate(0,' + (pageRange.Y + o.y) + 'px) translateZ(0)' + _t;
+								next.opacity = ~~(100 * (opacityStart + opacityDiff * pos)) / 100;
+								next[browser.cssCore + 'Transform'] = 'translate(0,' + ~~(pageRange.Y + o.y) + 'px) translateZ(0)' + _t;
 							}
 						}
 						reset = function(s, n) {
@@ -672,17 +672,16 @@ function FullPage(options) {
 						move = function (o) {
 							
 							var pos = Math.abs(o.x / pageRange.X),
-								_t = ' scale(' + (scaleStart + scaleDiff * pos)
-								   + ') rotate(' + (rotateStart + rotateDiff * pos) + 'deg)';
+								_t = ' scale(' + ~~(100 * (scaleStart + scaleDiff * pos)) / 100
+								   + ') rotate(' + ~~(rotateStart + rotateDiff * pos) + 'deg)';
 							
 							if (prev && o.x > 0) {
-								console.log()
-								prev.opacity = (opacityStart + opacityDiff * pos);
-								prev[browser.cssCore + 'Transform'] = 'translate(' + (o.x - pageRange.X) + 'px,0) translateZ(0)' + _t;
+								prev.opacity = ~~(100 * (opacityStart + opacityDiff * pos)) / 100;
+								prev[browser.cssCore + 'Transform'] = 'translate(' + ~~(o.x - pageRange.X) + 'px,0) translateZ(0)' + _t;
 							}
 							if (next && o.x < 0) {
-								next.opacity = (opacityStart + opacityDiff * pos);
-								next[browser.cssCore + 'Transform'] = 'translate(' + (pageRange.X + o.x) + 'px,0) translateZ(0)' + _t;
+								next.opacity = ~~(100 * (opacityStart + opacityDiff * pos)) / 100;
+								next[browser.cssCore + 'Transform'] = 'translate(' + ~~(pageRange.X + o.x) + 'px,0) translateZ(0)' + _t;
 							}
 						}
 						reset = function(s, n) {

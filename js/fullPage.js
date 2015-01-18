@@ -1,7 +1,7 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.1.16
+ * 2014.1.18
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -20,6 +20,8 @@ function FullPage(options) {
 		pageRange = {},
 		cubicCurve = {},
 		pageStyle = [],
+		stepArr = [],
+		stepNow = [],
 		mode = [],
 		modeLen,
 		navChildren,
@@ -34,6 +36,7 @@ function FullPage(options) {
 		setCubic,
 		trans,
 		resetAndRun,
+		checkStep,
 		onTap,
 		replaceClass,
 		roundPage,
@@ -49,6 +52,8 @@ function FullPage(options) {
 	}
 	for (_t = 0; _t < pagelen; _t++) {
 		pageStyle.push(page[_t].style);
+		stepArr.push(+page[_t].getAttribute('data-step') || 0);
+		stepNow.push(0);
 	}
 
 	browser = {
@@ -393,8 +398,44 @@ function FullPage(options) {
 
 	if (options.continuous) {
 		roundPage = function(page) {
+			var i = pagelen;
+
+			if (arguments[1]) {
+				if (page >= pagelen) {
+					while (i--) {
+						stepNow[i] = 0;
+					}
+				} else if (page < 0) {
+					while (i--) {
+						stepNow[i] = stepArr[i];
+					}
+				}
+			}
+
 			return (pagelen + page % pagelen) % pagelen
 		}
+	}
+
+	checkStep = function(direct) {
+		var oldStep = stepNow[indexNow],
+			newStep = oldStep + direct;
+			console.log(stepNow);
+		if (newStep >= 0 && newStep <= stepArr[indexNow]) {
+			if (newStep === 0) {
+				replaceClass(page[indexNow], 'step1', '');
+				stepNow[indexNow] = newStep;
+				return false;
+			}
+			if (newStep === 1 && oldStep === 0) {
+				page[indexNow].className += ' step1';
+				stepNow[indexNow] = newStep;
+				return false;
+			}
+			replaceClass(page[indexNow], 'step' + oldStep, 'step' + newStep);
+			stepNow[indexNow] = newStep;
+			return false;
+		}
+		return true;
 	}
 
 	goPage = function(to) {
@@ -403,17 +444,29 @@ function FullPage(options) {
 			indexOld,
 			_effectNow;
 
+		if (options.beforeChange) {
+			if (options.beforeChange(indexNow, page[indexNow]) === 'stop') {
+				return;
+			}
+		}
+
 		if (_isLocked                 			// make sure translate is already
 			|| to === indexNow) return;			// don't translate if thispage
 
 		if (options.continuous) {
-			to = roundPage(to)
+			to = roundPage(to, 1);
 		} else {
 			if (to >= pagelen || to < 0) return;
 		}
 
 		_isLocked = true;
 		
+		if (!checkStep(to - indexNow) && !arguments[1]) {
+			return setTimeout(function() {
+				_isLocked = false;
+			}, sTime);
+		}
+
 		for (_effectNow in effect) {
 			resetAndRun[_effectNow](effect[_effectNow], indexNow, to);
 		}
@@ -431,10 +484,6 @@ function FullPage(options) {
 
 			pageStyle[to][browser.cssCore + 'TransitionDuration'] = sTime + 'ms';
 		}, 20);
-
-		if (options.beforeChange) {
-			options.beforeChange(indexOld, page[indexOld]);
-		}
 
 		setTimeout(function() {
 
@@ -766,6 +815,7 @@ function FullPage(options) {
 								time : +new Date
 							}
 
+
 							// reset
 							delta = {};
 							isValidMove = false;
@@ -777,7 +827,8 @@ function FullPage(options) {
 						},
 						move : function(e) {
 
-							var touches = e.touches ? e.touches[0] : e;
+							var touches = e.touches ? e.touches[0] : e,
+								direct;
 
 							e.preventDefault();
 							// ensure swiping with one touch and not pinching
@@ -789,11 +840,18 @@ function FullPage(options) {
 								x : touches.pageX - start.x,
 								y : touches.pageY - start.y
 							}
+
 							if (!isValidMove) {
 								_t = Math.abs(delta.x) > Math.abs(delta.y) ? 'X' : 'Y';
 								_t = _t === options.effect.transform['translate'] ? true : false;
 								isValidMove = true;
 							} else {
+								if (options.effect.transform['translate'] === 'X') {
+									direct = delta.x < 0 ? 1 : -1;
+								} else {
+									direct = delta.y < 0 ? 1 : -1;
+								}
+								if (stepNow[indexNow] + direct >= 0 && stepNow[indexNow] + direct <= stepArr[indexNow]) return;
 								if (_t) move(delta);
 							}
 						},
@@ -845,6 +903,11 @@ function FullPage(options) {
 								if (prev) reset(prev, - 1);
 								if (next) reset(next, + 1);
 							} else {
+								if (!checkStep(nextDiff)) {
+									if (prev) reset(prev, - 1);
+									if (next) reset(next, + 1);
+									return;
+								}
 								if (options.beforeChange) {
 									options.beforeChange(indexNow, page[indexNow]);
 								}
@@ -902,7 +965,7 @@ function FullPage(options) {
 							t = e.tagName.toLowerCase();
 						}
 
-						goPage( + e.getAttribute('data-page') ); 
+						goPage( + e.getAttribute('data-page'), false); 
 					}
 					// bind event to navObj
 					onTap(navObj, gotoPage, 1);

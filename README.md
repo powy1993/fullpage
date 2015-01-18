@@ -48,6 +48,10 @@ Fullpage only needs to follow a simple pattern. Here is an example:
 <!--alternative-->
 ```
 
+!新功能: 
+你可以在 page 的 div 上加上 data-step, 当含有这个属性时, 你可以创造出不切屏的逐桢动画,
+fullpage 会为你自动添上 step1,step2,step3 这些 class, 并且在step终止时切屏.(详见Demo)
+
 Above is the initial required structure– a series of elements wrapped in two containers. Place any content you want within the items. The containing div will need to be passed to the Fullpage function like so:
 
 ``` js
@@ -99,6 +103,7 @@ I always place this at the bottom of the page, externally, to verify the page is
 - **mode** String *(default:'')* - 转换模式 'wheel,touch,nav:navBar' 表示 '滚轮,触摸,导航条:导航条id'
 
 - **beforeChange** Function - 滑动开始时的回调函数
+  - 当 retrun 'stop' 时,此次滑动将不会生效
 
 - **callback** Function - 滑动结束后的回调函数
 

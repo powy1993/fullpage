@@ -112,21 +112,25 @@
         margin-left: -100px;
         margin-top: -50px;
         opacity: 1;
-        transition: all .4s ease;
+        transition: all .8s ease;
         transform-origin: 50% 50%;
     }
     .step1 p {
         transform: translate(0, -50px);
+        -webkit-transform: translate(0, -50px);
     }
     .step2 p {
         opacity: 0;
         transform: scale(2);
+        -webkit-transform: scale(2);
     }
     .step3 p {
         transform: scale(1);
+        -webkit-transform: scale(1)
         opacity: 1;
     }
     .step4 p {
+        -webkit-transform: rotate(360deg) translate(0,-200px) scale(.3);
         transform: rotate(360deg) translate(0,-200px) scale(.3);
         opacity: 0;
     }

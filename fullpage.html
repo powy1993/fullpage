@@ -98,6 +98,38 @@
         width: 40px;
         height: 40px;
     }
+
+
+
+    p {
+        width: 200px;
+        height: 100px;
+        color:#fff;
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -100px;
+        margin-top: -50px;
+        opacity: 1;
+        transition: all .4s ease;
+        transform-origin: 50% 50%;
+    }
+    .step1 p {
+        transform: translate(0, -50px);
+    }
+    .step2 p {
+        opacity: 0;
+        transform: scale(2);
+    }
+    .step3 p {
+        transform: scale(1);
+        opacity: 1;
+    }
+    .step4 p {
+        transform: rotate(360deg) translate(0,-200px) scale(.3);
+        opacity: 0;
+    }
     </style>
 </head>
 <!--[if lte IE 7]>      
@@ -120,9 +152,9 @@
 			</div>
 		</div>
 
-		<div class="page page3">
+		<div class="page page3" data-step="4">
 			<div class="contain">
-				
+				<p class="demo-data-step">data-step可以让你在不切屏的情况下更换动画</p>
 			</div>
 		</div>
 
@@ -174,7 +206,7 @@ runPage = new FullPage({
 	mode : 'wheel,touch,nav:navBar',               // mode of fullpage
 	easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1];
     //  ,beforeChange : function(index, thisPage) {   // callback before pageChange
-    //    alert(index);
+    //    return 'stop';
     //  }
     //  ,callback : function(index, thisPage) {       // callback when pageChange
     //    alert(index);

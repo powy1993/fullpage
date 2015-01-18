@@ -906,15 +906,15 @@ function FullPage(options) {
 								if (!checkStep(nextDiff)) {
 									if (prev) reset(prev, - 1);
 									if (next) reset(next, + 1);
-									return;
-								}
-								if (options.beforeChange) {
-									options.beforeChange(indexNow, page[indexNow]);
-								}
-								if (nextDiff === -1) {
-									validReset(prev, -1);
 								} else {
-									validReset(next, 1);
+									if (options.beforeChange) {
+										options.beforeChange(indexNow, page[indexNow]);
+									}
+									if (nextDiff === -1) {
+										validReset(prev, -1);
+									} else {
+										validReset(next, 1);
+									}
 								}
 							}
 							pageContain.removeEventListener(_touch.move, touchEvent.move, false);

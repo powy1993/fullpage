@@ -461,7 +461,7 @@ function FullPage(options) {
 
 		_isLocked = true;
 		
-		if (!checkStep(to - indexNow) && !arguments[1]) {
+		if (!arguments[1] && !checkStep(to - indexNow)) {
 			return setTimeout(function() {
 				_isLocked = false;
 			}, sTime);
@@ -965,7 +965,7 @@ function FullPage(options) {
 							t = e.tagName.toLowerCase();
 						}
 
-						goPage( + e.getAttribute('data-page'), false); 
+						goPage( + e.getAttribute('data-page'), 1); 
 					}
 					// bind event to navObj
 					onTap(navObj, gotoPage, 1);

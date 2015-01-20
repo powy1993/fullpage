@@ -1,7 +1,7 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.1.18
+ * 2014.1.20
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -419,7 +419,6 @@ function FullPage(options) {
 	checkStep = function(direct) {
 		var oldStep = stepNow[indexNow],
 			newStep = oldStep + direct;
-			console.log(stepNow);
 		if (newStep >= 0 && newStep <= stepArr[indexNow]) {
 			if (newStep === 0) {
 				replaceClass(page[indexNow], 'step1', '');
@@ -815,7 +814,10 @@ function FullPage(options) {
 								time : +new Date
 							}
 
-
+							if (options.onSwipeStart 
+								&& options.onSwipeStart(indexNow, page[indexNow]) === 'stop') {
+								return _isLocked = false;
+							}
 							// reset
 							delta = {};
 							isValidMove = false;
@@ -899,23 +901,21 @@ function FullPage(options) {
 							}
 							
 							
-							if (!isValidSlide || !_t) {
+							if (!isValidSlide 
+								|| !_t 
+								|| !checkStep(nextDiff)
+								|| options.continuous === false 
+								&& (!prev && nextDiff === -1 || !next && nextDiff === 1)) {
 								if (prev) reset(prev, - 1);
 								if (next) reset(next, + 1);
+							} else if (options.beforeChange 
+									   && options.beforeChange(indexNow, page[indexNow]) === 'stop') {
+								if (prev) reset(prev, - 1);
+								if (next) reset(next, + 1);
+							} else if (nextDiff === -1) {
+							 	validReset(prev, -1);
 							} else {
-								if (!checkStep(nextDiff)) {
-									if (prev) reset(prev, - 1);
-									if (next) reset(next, + 1);
-								} else {
-									if (options.beforeChange) {
-										options.beforeChange(indexNow, page[indexNow]);
-									}
-									if (nextDiff === -1) {
-										validReset(prev, -1);
-									} else {
-										validReset(next, 1);
-									}
-								}
+								validReset(next, 1);
 							}
 							pageContain.removeEventListener(_touch.move, touchEvent.move, false);
 							pageContain.removeEventListener(_touch.end, touchEvent.end, false);

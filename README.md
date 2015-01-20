@@ -49,6 +49,7 @@ Fullpage only needs to follow a simple pattern. Here is an example:
 ```
 
 !新功能: 
+
 你可以在 page 的 div 上加上 data-step, 当含有这个属性时, 你可以创造出不切屏的逐桢动画,
 fullpage 会为你自动添上 step1,step2,step3 这些 class, 并且在step终止时切屏.(详见Demo)
 
@@ -56,22 +57,26 @@ Above is the initial required structure– a series of elements wrapped in two c
 
 ``` js
 
-runPage = new FullPage({
+var runPage = new FullPage({
+
   id : 'pageContain',                            // id of contain
   slideTime : 800,                               // time of slide
-  continuous : true,                             // create an infinite feel with no endpoints
+  continuous : false,                            // create an infinite feel with no endpoints
   effect : {                                     // slide effect
           transform : {
-            translate : 'Y',           // 'X'|'Y'|'XY'|'none'
-            scale : [.1, 1],           // [scalefrom, scaleto]
-            rotate : [270, 0]          // [rotatefrom, rotateto]
+            translate : 'Y',                      // 'X'|'Y'|'XY'|'none'
+            scale : [.1, 1],                      // [scalefrom, scaleto]
+            rotate : [0, 0]                       // [rotatefrom, rotateto]
           },
           opacity : [0, 1]                       // [opacityfrom, opacityto]
       },                           
   mode : 'wheel,touch,nav:navBar',               // mode of fullpage
   easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1];
+    //  ,onSwipeStart : function(index, thisPage) {   // callback onTouchStart
+    //    return 'stop';
+    //  }
     //  ,beforeChange : function(index, thisPage) {   // callback before pageChange
-    //    alert(index);
+    //    return 'stop';
     //  }
     //  ,callback : function(index, thisPage) {       // callback when pageChange
     //    alert(index);
@@ -102,8 +107,11 @@ I always place this at the bottom of the page, externally, to verify the page is
 
 - **mode** String *(default:'')* - 转换模式 'wheel,touch,nav:navBar' 表示 '滚轮,触摸,导航条:导航条id'
 
+- **onSwipeStart** Function - 触摸开始时的回调函数
+  - 当 retrun 'stop' 时,此次触摸将不会生效
+
 - **beforeChange** Function - 滑动开始时的回调函数
-  - 当 retrun 'stop' 时,此次滑动将不会生效
+  - 当 retrun 'stop' 时,此次滑动将还原
 
 - **callback** Function - 滑动结束后的回调函数
 

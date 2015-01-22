@@ -1,7 +1,7 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.1.20
+ * 2014.1.22
  * Github:https://github.com/powy1993/fullpage
  */
 
@@ -565,10 +565,18 @@ function FullPage(options) {
 						_t;
 
 					if (!browser.touch && isWindowsPhone) {
-						_touch = {
-							start: 'mousedown',
-							move: 'mousemove',
-							end: 'mouseup'
+						if (window.navigator.msPointerEnabled) {
+							_touch = {
+								start: 'MSPointerDown',
+								move: 'MSPointerMove',
+								end: 'MSPointerUp'
+							}
+						} else {
+							_touch = {
+								start: 'pointerDown',
+								move: 'pointerMove',
+								end: 'pointerUp'
+							}
 						}
 					} else {
 						_touch = {

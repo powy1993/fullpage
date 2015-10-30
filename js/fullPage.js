@@ -1,8 +1,9 @@
 /* 
  * rusherwang
  * rusherwang@tencent.com
- * 2014.4.2
- * Github:https://github.com/powy1993/fullpage
+ * create: 2014.4.2
+ * update: 2015.10.30
+ * Github: https://github.com/powy1993/fullpage
  */
 
 function FullPage(options) {
@@ -456,7 +457,10 @@ function FullPage(options) {
 		if (options.continuous) {
 			to = roundPage(to, 1);
 		} else {
-			if (to >= pagelen || to < 0 && stepNow[indexNow] === 0) return;
+			if (to >= pagelen 
+				&& stepNow[indexNow] >= stepArr[indexNow] 
+				|| to < 0 
+				&& stepNow[indexNow] === 0) return;
 		}
 
 		_isLocked = true;

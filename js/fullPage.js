@@ -2,7 +2,7 @@
  * rusherwang
  * rusherwang@tencent.com
  * create: 2014.4.2
- * update: 2015.10.30
+ * update: 2016.3.30
  * Github: https://github.com/powy1993/fullpage
  */
 
@@ -39,6 +39,7 @@ function FullPage(options) {
 		resetAndRun,
 		checkStep,
 		onTap,
+		resetStep,
 		replaceClass,
 		roundPage,
 		goPage,
@@ -439,6 +440,19 @@ function FullPage(options) {
 		return true;
 	}
 
+	resetStep = function() {
+		var stepTo = page[indexNow].getAttribute('data-step-restart');
+		if (stepTo == null) return;
+
+		stepTo = +stepTo > stepArr[indexNow] ? stepArr[indexNow] : +stepTo;
+		if (stepTo === 0) {
+			replaceClass(page[indexNow], 'step' + stepNow[indexNow], '');
+		} else {
+			replaceClass(page[indexNow], 'step' + stepNow[indexNow], 'step' + stepTo);
+		}
+		stepNow[indexNow] = stepTo;
+	}
+
 	goPage = function(to) {
 
 		var fix = _fix,
@@ -491,6 +505,7 @@ function FullPage(options) {
 
 		setTimeout(function() {
 
+			resetStep();
 			replaceClass(page[indexOld], 'current', '');
 			replaceClass(page[indexNow], 'slide', 'current');
 
@@ -693,6 +708,7 @@ function FullPage(options) {
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate(0,0) translateZ(0)';
 							setTimeout(function() {
+								resetStep();
 								replaceClass(page[indexNow], 'current', '');
 								replaceClass(page[to], 'slide', 'current');
 								indexNow = to;
@@ -799,6 +815,7 @@ function FullPage(options) {
 							s[browser.cssCore + 'TransitionDuration'] = _t + 'ms';
 							s[browser.cssCore + 'Transform'] = 'translate(0,0) translateZ(0)';
 							setTimeout(function() {
+								resetStep();
 								replaceClass(page[indexNow], 'current', '');
 								replaceClass(page[to], 'slide', 'current');
 								indexNow = to;
@@ -811,7 +828,6 @@ function FullPage(options) {
 							}, _t);
 						}
 					}
-
 
 					touchEvent = {
 						start : function(e) {
@@ -912,7 +928,6 @@ function FullPage(options) {
 									 : delta.y > 0 ? -1 : 1;
 								break;
 							}
-							
 							
 							if (!isValidSlide 
 								|| !_t 

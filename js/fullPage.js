@@ -2,7 +2,7 @@
  * rusherwang
  * rusherwang@tencent.com
  * create: 2014.4.2
- * update: 2016.3.30
+ * update: 2016.6.22
  * Github: https://github.com/powy1993/fullpage
  */
 
@@ -455,7 +455,10 @@ function FullPage(options) {
 
 	goPage = function(to) {
 
-		var fix = _fix,
+		var isMac = function(ua) {
+        		return ua.indexOf('Mac OS') !== -1;
+    		}(navigator.userAgent),
+			fix = _fix,
 			indexOld,
 			_effectNow;
 
@@ -512,8 +515,14 @@ function FullPage(options) {
 			if (options.callback) {
 				options.callback(indexNow, page[indexNow]);
 			}
-
-			_isLocked = false;
+			if (isMac) {
+				// Mac电脑多延迟500ms 防止鼠标滚轮事件不断触发导致多翻一页
+				setTimeout(function() {
+					_isLocked = false;
+				}, 500)
+			} else {
+				_isLocked = false;
+			}
 		}, sTime + _fix + 120);
 
 	}
@@ -536,7 +545,8 @@ function FullPage(options) {
 		(function(m) {
 
 			switch (true) {
-				case m === 'wheel' : 
+				case m === 'wheel' :
+
 				wheelScroll = function(e) {
 
 					var direct;

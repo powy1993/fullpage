@@ -71,7 +71,8 @@ var runPage = new FullPage({
           opacity : [0, 1]                       // [opacityfrom, opacityto]
       },                           
   mode : 'wheel,touch,nav:navBar',               // mode of fullpage
-  easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1];
+  easing : 'ease',                               // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1];
+  start : 1					 // which page will display when install
     //  ,onSwipeStart : function(index, thisPage) {   // callback onTouchStart
     //    return 'stop';
     //  }

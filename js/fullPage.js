@@ -16,7 +16,7 @@ function FullPage(options) {
 		iPage = pagelen,
 		sTime = options.slideTime || 800,
 		effect = options.effect || {},
-		indexNow = 0,
+		indexNow = options.start || 0,
 		browser = {},
 		pageRange = {},
 		cubicCurve = {},

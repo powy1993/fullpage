@@ -115,6 +115,7 @@ I always place this at the bottom of the page, externally, to verify the page is
   - 当 retrun 'stop' 时,此次滑动将还原
 
 - **callback** Function - 滑动结束后的回调函数
+- **start** Integer - 初始化时被展示的页面页码
 
 ## Fullpage API
 

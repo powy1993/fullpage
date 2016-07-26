@@ -131,7 +131,7 @@ Fullpage exposes a few functions that can be useful for script control of your p
 
 ## 接口
 
-Fullpage也提供了一些借口供使用此插件的开发者调用：
+Fullpage也提供了一些接口供使用此插件的开发者调用：
 
 `prev()`  直接滑向上一页
 

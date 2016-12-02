@@ -109,10 +109,10 @@ I always place this at the bottom of the page, externally, to verify the page is
 - **mode** String *(default:'')* - 转换模式 'wheel,touch,nav:navBar' 表示 '滚轮,触摸,导航条:导航条id'
 
 - **onSwipeStart** Function - 触摸开始时的回调函数
-  - 当 retrun 'stop' 时,此次触摸将不会生效
+  - 当 return 'stop' 时,此次触摸将不会生效
 
 - **beforeChange** Function - 滑动开始时的回调函数
-  - 当 retrun 'stop' 时,此次滑动将还原
+  - 当 return 'stop' 时,此次滑动将还原
 
 - **callback** Function - 滑动结束后的回调函数
 - **start** Integer - 初始化时被展示的页面页码
